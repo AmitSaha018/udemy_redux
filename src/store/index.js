@@ -1,35 +1,34 @@
 import { createStore } from "redux";
 
-const initialState = { counter: 0 , showCounter: true };
+import { createSlice, configureStore } from "@reduxjs/toolkit";
 
-const counterReducer = (state = initialState, action) => {
-    if (action.type === "increment") {
-        return {
-            ...state,
-            counter: state.counter + 1
-      }
-  }
-    if (action.type === "incrementby5") {
-        return {
-            ...state,
-            counter: state.counter + action.payload
-      }
-  }
-    if (action.type === "decrement") {
-        return {
-            ...state,
-            counter: state.counter - 1
-        }
+const initialState = { counter: 0, showCounter: true };
+
+const counterSilce = createSlice({
+    name: 'counter',
+    initialState,
+    reducers: {
+        increment(state) {
+            state.counter++;
+            // we can directly mutate the state in redux toolkit
+            // because redux toolkit uses a package named emmer
+            // under the hood to not mutate the state directly.
+         },
+        decrement(state) {
+            state.counter--;
+         },
+        increase(state, action) {
+            state.counter = state.counter + action.payload;
+         },
+        toggleCounter(state) {
+            state.showCounter = !state.showCounter;
+         }
     }
-    if (action.type === "toggle") {
-        return {
-            ...state,
-            showCounter: !state.showCounter
-      }
-  }
-  return initialState;
-};
+});
 
-const store = createStore(counterReducer);
+const store = configureStore({
+    reducer: counterSilce.reducer
+});
+export const counterActions = counterSilce.actions
 
 export default store;
